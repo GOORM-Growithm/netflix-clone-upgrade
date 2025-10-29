@@ -9,7 +9,7 @@
     0px 5px 8px 0px rgba(0, 0, 0, 0.14),
     0px 1px 14px 0px rgba(0, 0, 0, 0.12);
   background: #111;
-  overflow: hidden;
+  overflow: auto;
   border-radius: 8px;
   transition: opacity transform 400ms ease-in-out 2s;
   animation: fadeIn 400ms;
@@ -68,6 +68,25 @@
   z-index: 1000;
   color: white;
 }
+.modal__button__contanier {
+  text-align: right;
+}
+.modal__detail-button {
+  background-color: #e50914;
+  color: #f1f1f1;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.modal__detail-button:hover {
+  background-color: #b0060d;
+  box-shadow: 0 0 10px rgba(229, 9, 20, 0.5);
+}
+
 @media screen and (max-height: 768px) {
   .wrapper-modal {
     align-items: unset;
