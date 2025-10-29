@@ -1,7 +1,5 @@
 .modal {
   position: relative;
-  top: 50%;
-  transform: translateY(-50%);
   max-width: 800px;
   max-height: 90vh;
   box-shadow:
@@ -55,6 +53,7 @@
   -webkit-tap-highlight-color: transparent;
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 .presentation {
   z-index: 1200;
