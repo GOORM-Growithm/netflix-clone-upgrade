@@ -1,0 +1,145 @@
+.detail__contanier {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  height: 100vh;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.detail__contanier::after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  content: "";
+}
+
+.detail__info_contanier {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: clamp(600px, 80%, 900px);
+  height: 80%;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: #f1f1f1;
+  border-radius: 15px;
+  padding: 25px;
+  z-index: 2;
+}
+
+.genre__contanier {
+  padding: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+.genre {
+  padding: 6px 14px;
+  background: linear-gradient(145deg, #e50914, #b0060d);
+  border-radius: 20px;
+  color: #f5f5f5;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.25s ease;
+  cursor: default;
+}
+
+.genre:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(145deg, #ff0a16, #e50914);
+  box-shadow: 0 5px 12px rgba(229, 9, 20, 0.4);
+}
+
+.detail__title {
+  font-size: 36px;
+  font-weight: 700;
+  margin: 20px 0 10px;
+  text-align: center;
+}
+
+.detail__info {
+  display: flex;
+  gap: 15px;
+  font-size: 16px;
+  opacity: 0.9;
+  margin-bottom: 20px;
+}
+
+.detail__overview {
+  font-size: 18px;
+  line-height: 1.6;
+  text-align: center;
+  max-width: 600px;
+  margin-bottom: 30px;
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+}
+
+.detail__button__container {
+  display: flex;
+  gap: 15px;
+}
+
+.detail__play,
+.detail__watchlist {
+  padding: 10px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.detail__play {
+  background-color: #e50914;
+  color: #f1f1f1;
+}
+
+.detail__play:hover {
+  background-color: #b0060d;
+}
+
+.detail__watchlist {
+  background-color: #2f2f2f;
+  color: #ccc;
+}
+
+.detail__watchlist:hover {
+  background-color: #3d3d3d;
+}
+
+.detail__subinfo {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px 0;
+  border-bottom: 1px solid rgb(153, 153, 153);
+  border-top: 1px solid rgb(153, 153, 153);
+}
+
+.image__contanier {
+  display: flex;
+  justify-content: end;
+  flex: 1;
+}
+
+.subinfo__contanier {
+  flex: 1;
+}
