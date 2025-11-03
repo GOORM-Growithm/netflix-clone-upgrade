@@ -33,7 +33,7 @@
   font-size: 20px;
   line-height: 1.5;
 }
-.modal__user-perc {
+.modal__user_perc {
   color: #46d369;
 }
 .modal::-webkit-scrollbar {
