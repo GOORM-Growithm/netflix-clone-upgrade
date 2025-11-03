@@ -49,7 +49,7 @@ function MovieModal({
                 className="modal__detail-button"
                 onClick={() => navigator(`/${id}`)}
               >
-                디테일 보기
+                상세 보기
               </button>
             </div>
           </div>
