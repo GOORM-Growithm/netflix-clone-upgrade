@@ -7,29 +7,61 @@ import "./SearchPage.css";
 export default function SearchPage() {
   const navigate = useNavigate();
   const [searchResults, setSearchResults] = useState([]);
-  const useQuery = () => {
-    return new URLSearchParams(useLocation().search);
-  };
+  const [page, setPage] = useState(1);
+  const [isFetching, setIsFetching] = useState(false);
 
+  const useQuery = () => { return new URLSearchParams(useLocation().search);  };
   let query = useQuery();
   const searchTerm = query.get("q");
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
+  /* 검색어에 따른 페이지 초기화 */
   useEffect(() => {
     if (debouncedSearchTerm) {
-      fetchSearchMovie(debouncedSearchTerm);
+      setPage(1);
+      fetchSearchMovie(debouncedSearchTerm, 1, true);
+    } else {
+      setSearchResults([]);
     }
   }, [debouncedSearchTerm]);
 
-  const fetchSearchMovie = async (searchTerm) => {
+  /* 스크롤 이벤트 */
+  useEffect(() => {
+    const handleScroll = () => {
+      const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
+
+      if (scrollTop + clientHeight >= scrollHeight - 200 && !isFetching) {
+        console.log("Scroll triggered, fetching next page...");
+        setPage((prev) => prev + 1);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isFetching]);
+
+  /* 페이지 번호에 따른 추가 로딩 */
+  useEffect(() => {
+    if (page > 1 && debouncedSearchTerm) {
+      fetchSearchMovie(debouncedSearchTerm, page);
+    }
+  }, [page]);
+
+
+  const fetchSearchMovie = async (searchTerm, pageNum = 1, reset = false) => {
     console.log("searchTerm", searchTerm);
     try {
+      setIsFetching(true);
       const request = await axios.get(
-        `/search/multi?include_adult=false&query=${searchTerm}`
-      );
+        `/search/multi?include_adult=false&query=${searchTerm}&page=${pageNum}`
+      );      
       console.log(request);
-      setSearchResults(request.data.results);
+
+      const results = request.data.results || [];
+      setSearchResults((prev) => reset ? results : [...prev, ...results]);
     } catch (error) {
       console.log("error", error);
+    } finally {
+      setIsFetching(false);
     }
   };
 
@@ -56,6 +88,7 @@ export default function SearchPage() {
             );
           }
         })}
+        {isFetching && <p className="loading">Loading...</p>}
       </section>
     ) : (
       <section className="no-results">
