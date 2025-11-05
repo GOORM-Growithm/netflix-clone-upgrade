@@ -58,6 +58,18 @@ export default function SearchPage() {
     }
   }, [page]);
 
+  /* 뷰포트에 내용이 다 차지 않을 경우 (고해상도 모니터) */
+  useEffect(() => {
+    if (hasMore && !isFetchingRef.current) {
+      const { scrollHeight, clientHeight } = document.documentElement;
+      if (scrollHeight <= clientHeight + 100) {
+        console.log("컨텐츠가 한 화면 이하 — 다음 페이지 자동 요청");
+        setPage((prev) => prev + 1);
+      }
+    }
+  }, [searchResults]);
+
+
   const fetchSearchMovie = async (searchTerm, pageNum = 1, reset = false) => {
     if (isFetchingRef.current) {
       console.log("⏸️ fetch blocked - already fetching...");
