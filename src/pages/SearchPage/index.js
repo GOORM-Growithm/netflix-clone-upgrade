@@ -9,6 +9,7 @@ export default function SearchPage() {
   const [searchResults, setSearchResults] = useState([]);
   const [page, setPage] = useState(1);
   const [isFetching, setIsFetching] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
   const useQuery = () => { return new URLSearchParams(useLocation().search);  };
   let query = useQuery();
@@ -34,6 +35,10 @@ export default function SearchPage() {
         console.log("Scroll triggered, fetching next page...");
         setPage((prev) => prev + 1);
       }
+      if (scrollTop > 400)
+        setShowScrollTop(true);
+      else
+        setShowScrollTop(false);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -54,7 +59,7 @@ export default function SearchPage() {
       const request = await axios.get(
         `/search/multi?include_adult=false&query=${searchTerm}&page=${pageNum}`
       );      
-      console.log(request);
+      console.log('search request', request);
 
       const results = request.data.results || [];
       setSearchResults((prev) => reset ? results : [...prev, ...results]);
@@ -65,13 +70,20 @@ export default function SearchPage() {
     }
   };
 
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth", /* auto | instant | smooth */
+    });
+  };
+
   const renderSearchResults = () => {
     return searchResults.length > 0 ? (
       <section className="search-container">
         {searchResults.map((movie) => {
           if (movie.backdrop_path !== null && movie.media_type !== "person") {
             const movieImageUrl =
-              "https://image.tmdb.org/t/p/w500" + movie.backdrop_path;
+              "https://image.tmdb.org/t/p/w300" + movie.backdrop_path;
             return (
               <div className="movie" key={movie.id}>
                 <div
@@ -94,12 +106,21 @@ export default function SearchPage() {
       <section className="no-results">
         <div className="no-results__text">
           <p>
-            찾고자하는 검색어"{debouncedSearchTerm}"에 맞는 영화가 없습니다.
+            찾고자하는 검색어 "{debouncedSearchTerm}"에 맞는 영화가 없습니다.
           </p>
         </div>
       </section>
     );
   };
 
-  return renderSearchResults();
+  return (
+    <>
+      {renderSearchResults()}
+      {showScrollTop && (
+        <button className="scroll-to-top" onClick={scrollToTop}>
+          ↑
+        </button>
+      )}
+    </>
+  );
 }
