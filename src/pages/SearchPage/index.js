@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "../../api/axios";
 import { useDebounce } from "../../hooks/useDebounce";
@@ -11,8 +11,10 @@ export default function SearchPage() {
   const [isFetching, setIsFetching] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
 
-  const useQuery = () => { return new URLSearchParams(useLocation().search);  };
-  let query = useQuery();
+  const isFetchingRef = useRef(false);
+
+  const useQuery = () => new URLSearchParams(useLocation().search);
+  const query = useQuery();
   const searchTerm = query.get("q");
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
@@ -31,18 +33,20 @@ export default function SearchPage() {
     const handleScroll = () => {
       const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
 
-      if (scrollTop + clientHeight >= scrollHeight - 200 && !isFetching) {
+      if (
+        scrollTop + clientHeight >= scrollHeight - 200 &&
+        !isFetchingRef.current
+      ) {
         console.log("Scroll triggered, fetching next page...");
         setPage((prev) => prev + 1);
       }
-      if (scrollTop > 400)
-        setShowScrollTop(true);
-      else
-        setShowScrollTop(false);
+
+      setShowScrollTop(scrollTop > 400);
     };
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [isFetching]);
+  }, []);
 
   /* 페이지 번호에 따른 추가 로딩 */
   useEffect(() => {
@@ -51,39 +55,48 @@ export default function SearchPage() {
     }
   }, [page]);
 
-
   const fetchSearchMovie = async (searchTerm, pageNum = 1, reset = false) => {
+    if (isFetchingRef.current) {
+      console.log("⏸️ fetch blocked - already fetching...");
+      return;
+    }
+
     console.log("searchTerm", searchTerm);
+    isFetchingRef.current = true;
+    setIsFetching(true);
+
     try {
-      setIsFetching(true);
       const request = await axios.get(
         `/search/multi?include_adult=false&query=${searchTerm}&page=${pageNum}`
-      );      
-      console.log('search request', request);
+      );
+      console.log("search request", request);
 
       const results = request.data.results || [];
-      setSearchResults((prev) => reset ? results : [...prev, ...results]);
+      setSearchResults((prev) => (reset ? results : [...prev, ...results]));
     } catch (error) {
       console.log("error", error);
     } finally {
+      isFetchingRef.current = false;
       setIsFetching(false);
     }
   };
 
+  /* 맨 위로 이동 */
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
-      behavior: "smooth", /* auto | instant | smooth */
+      behavior: "smooth", // auto | instant | smooth
     });
   };
 
+  /* 결과 렌더링 */
   const renderSearchResults = () => {
     return searchResults.length > 0 ? (
       <section className="search-container">
         {searchResults.map((movie) => {
           if (movie.backdrop_path !== null && movie.media_type !== "person") {
             const movieImageUrl =
-              "https://image.tmdb.org/t/p/w300" + movie.backdrop_path;
+              "https://image.tmdb.org/t/p/w400" + movie.backdrop_path;
             return (
               <div className="movie" key={movie.id}>
                 <div
