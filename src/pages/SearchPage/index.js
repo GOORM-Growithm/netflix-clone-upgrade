@@ -9,6 +9,7 @@ export default function SearchPage() {
   const [searchResults, setSearchResults] = useState([]);
   const [page, setPage] = useState(1);
   const [isFetching, setIsFetching] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   const isFetchingRef = useRef(false);
@@ -22,6 +23,7 @@ export default function SearchPage() {
   useEffect(() => {
     if (debouncedSearchTerm) {
       setPage(1);
+      setHasMore(true);
       fetchSearchMovie(debouncedSearchTerm, 1, true);
     } else {
       setSearchResults([]);
@@ -35,9 +37,10 @@ export default function SearchPage() {
 
       if (
         scrollTop + clientHeight >= scrollHeight - 200 &&
-        !isFetchingRef.current
+        !isFetchingRef.current &&
+        hasMore
       ) {
-        console.log("Scroll triggered, fetching next page...");
+        console.log("Scroll triggered, fetching next page: ", page + 1);
         setPage((prev) => prev + 1);
       }
 
@@ -46,7 +49,7 @@ export default function SearchPage() {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [hasMore, page]);
 
   /* 페이지 번호에 따른 추가 로딩 */
   useEffect(() => {
@@ -72,6 +75,11 @@ export default function SearchPage() {
       console.log("search request", request);
 
       const results = request.data.results || [];
+      if (results.length === 0 || results.length < 20) {
+        setHasMore(false);
+        console.log("더 이상 불러올 결과 없음");
+      }
+
       setSearchResults((prev) => (reset ? results : [...prev, ...results]));
     } catch (error) {
       console.log("error", error);
@@ -114,6 +122,9 @@ export default function SearchPage() {
           }
         })}
         {isFetching && <p className="loading">Loading...</p>}
+        {!hasMore && (
+          <p className="end-of-results">모든 결과를 불러왔습니다.</p>
+        )}
       </section>
     ) : (
       <section className="no-results">
