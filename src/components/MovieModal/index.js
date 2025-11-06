@@ -1,8 +1,10 @@
-import React, { useRef, useCallback } from "react";
+import React, { useRef } from "react";
 import "./MovieModal.css";
 import useOnClickOutside from "../../hooks/useOnClickOutside";
+import { useNavigate } from "react-router-dom";
 
 function MovieModal({
+  id,
   backdrop_path,
   title,
   overview,
@@ -13,9 +15,10 @@ function MovieModal({
   setModalOpen,
 }) {
   const ref = useRef();
+  const navigator = useNavigate();
 
   useOnClickOutside(ref, () => {
-      setModalOpen(false);
+    setModalOpen(false);
   });
 
   return (
@@ -41,6 +44,14 @@ function MovieModal({
             <h2 className="modal__title">{title ? title : name}</h2>
             <p className="modal__overview"> 평점: {vote_average}</p>
             <p className="modal__overview"> {overview}</p>
+            <div className="modal__button__contanier">
+              <button
+                className="modal__detail-button"
+                onClick={() => navigator(`/${id}`)}
+              >
+                상세 보기
+              </button>
+            </div>
           </div>
         </div>
       </div>
