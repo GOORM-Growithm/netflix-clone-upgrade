@@ -12,20 +12,37 @@ export default function Banner() {
   }, []);
 
   const fetchData = async () => {
-    // 현재 상영중인 영화 정보를 가져오기(여러 영화)
-    const request = await axios.get(requests.fetchNowPlaying);
+    try {
+      // 현재 상영 중인 영화 정보 가져오기 (20작)
+      const request = await axios.get(requests.fetchNowPlaying);
+      const movies = request.data.results;
 
-    // 여러 영화 중 영화 하나의 ID를 가져오기
-    const movieId =
-      request.data.results[
-        Math.floor(Math.random() * request.data.results.length)
-      ].id;
+      // 각 영화의 상세 정보 요청
+      /// 병렬 요청을 위한 Promise 준비
+      const movieDetailPromises = movies.map(movie =>
+        axios.get(`movie/${movie.id}`, {
+          params: { append_to_response: "videos"},
+        })
+      );
+      /// 20개 병렬 요청 처리
+      const movieDetailResponses = await Promise.allSettled(movieDetailPromises);
+      
+      // 응답에 성공한 비디오 목록 중 videos가 존재하는 영화만 필터링
+      const moviesWithVideos = movieDetailResponses
+        .filter(res => res.status === "fulfilled")
+        .map(res => res.value.data)
+        .filter(movie => movie.videos?.results?.length > 0);
 
-    // 특정 영화의 더 상세한 정보를 가져오기(비디오 정보도 포함)
-    const { data: movieDetail } = await axios.get(`movie/${movieId}`, {
-      params: { append_to_response: "videos" },
-    });
-    setMovie(movieDetail);
+      // 임의의 영화 선정
+      if (moviesWithVideos.length > 0) {
+        const randomMovie = moviesWithVideos[Math.floor(Math.random() * moviesWithVideos.length)];
+        setMovie(randomMovie);
+      } else {
+        console.warn("No Movies with videos.");
+      }
+    } catch (error) {
+      console.error("Error fetching movie data : ", error);
+    }
   };
 
   const truncate = (str, n) => {
