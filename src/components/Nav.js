@@ -12,7 +12,7 @@ export default function Nav() {
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
 
-  // 스크롤 시 nav 색상 변경
+
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 50) setShow(true);
@@ -53,7 +53,7 @@ export default function Nav() {
           onClick={() => (window.location.href = "/")}
         />
 
-        {/* 카테고리 드롭다운 */}
+       
         <div className="nav__category-container" ref={dropdownRef}>
           <button
             className="nav__category-button"
@@ -89,7 +89,7 @@ export default function Nav() {
         </div>
       </div>
 
-      {/* 오른쪽 검색창 및 아바타 */}
+     
       <div className="nav__right">
         <input
           value={searchValue}
