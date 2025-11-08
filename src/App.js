@@ -5,7 +5,6 @@ import Nav from "./components/Nav";
 import DetailPage from "./pages/DetailPage";
 import MainPage from "./pages/MainPage";
 import SearchPage from "./pages/SearchPage";
-import CategoryPage from "./pages/CategoryPage/CategoryPage";
 
 const Layout = () => {
   return (
@@ -27,7 +26,6 @@ function App() {
           <Route index element={<MainPage />} />
           <Route path=":movieId" element={<DetailPage />} />
           <Route path="search" element={<SearchPage />} />
-          <Route path="category/:genreId/:genreName" element={<CategoryPage />} />
         </Route>
       </Routes>
     </div>
