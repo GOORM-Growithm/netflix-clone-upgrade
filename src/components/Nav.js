@@ -1,60 +1,50 @@
-import React, { useState, useEffect,useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./Nav.css";
+import axios from "../api/axios";
 import useOnClickOutside from "../hooks/useOnClickOutside";
 
 export default function Nav() {
   const [show, setShow] = useState(false);
   const [searchValue, setSearchValue] = useState("");
-  const navigate = useNavigate();
-  
-  //state와 ref 선언
   const [showCategories, setShowCategories] = useState(false);
+  const [genres, setGenres] = useState([]);
+  const navigate = useNavigate();
   const dropdownRef = useRef(null);
 
+  // 스크롤 시 nav 색상 변경
   useEffect(() => {
-    window.addEventListener("scroll", () => {
-      console.log("window.scrollY", window.scrollY);
-      if (window.scrollY > 50) {
-        setShow(true);
-      } else {
-        setShow(false);
-      }
-    });
-
-    return () => {
-      window.removeEventListener("scroll", () => {});
+    const handleScroll = () => {
+      if (window.scrollY > 50) setShow(true);
+      else setShow(false);
     };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-    // 검색 입력 시
+  // 장르 API 호출
+  useEffect(() => {
+    async function fetchGenres() {
+      try {
+        const request = await axios.get("/genre/movie/list?language=ko-KR");
+        setGenres(request.data.genres);
+      } catch (error) {
+        console.log("error fetching genres", error);
+      }
+    }
+    fetchGenres();
+  }, []);
+
+  // 외부 클릭 시 닫기
+  useOnClickOutside(dropdownRef, () => setShowCategories(false));
+
   const handleChange = (e) => {
     setSearchValue(e.target.value);
     navigate(`/search?q=${e.target.value}`);
   };
 
-// 드롭다운 외부 클릭 시 닫기
-  useOnClickOutside(dropdownRef, () => setShowCategories(false));
-
-  // 카테고리 목록
-  const categories = [
-    { name: "NETFLIX ORIGINALS", id: "NO" },
-    { name: "Trending Now", id: "TN" },
-    { name: "Top Rated", id: "TR" },
-    { name: "Action Movies", id: "AM" },
-    { name: "Comedy Movies", id: "CM" },
-    { name: "아시아 드라마", id: "AD" },
-    { name: "SF & 판타지", id: "SF" },
-    { name: "호러", id: "HO" },
-    { name: "로맨스", id: "RO" },
-    { name: "애니", id: "AN" },
-  ];
-
-
-
-return (
-    <nav className={`nav ${show && "nav__black"} `}>
-      {/* 왼쪽 영역: 로고 + 카테고리 */}
+  return (
+    <nav className={`nav ${show && "nav__black"}`}>
       <div className="nav__left">
         <img
           alt="Netflix logo"
@@ -62,6 +52,7 @@ return (
           className="nav__logo"
           onClick={() => (window.location.href = "/")}
         />
+
         {/* 카테고리 드롭다운 */}
         <div className="nav__category-container" ref={dropdownRef}>
           <button
@@ -70,23 +61,35 @@ return (
           >
             카테고리 ▾
           </button>
+
           {showCategories && (
             <div className="nav__category-dropdown">
-              {categories.map((category) => (
-                <Link
-                  key={category.id}
-                  to={`/#${category.id}`}
-                  className="nav__category-item"
-                  onClick={() => setShowCategories(false)}
-                >
-                  {category.name}
-                </Link>
-              ))}
+              {(() => {
+                const columns = [[], [], []];
+                genres.forEach((genre, index) => {
+                  columns[index % 3].push(genre);
+                });
+                return columns.map((col, colIndex) => (
+                  <div className="nav__category-column" key={colIndex}>
+                    {col.map((genre) => (
+                      <Link
+                        key={genre.id}
+                        to={`/category/${genre.id}/${genre.name}`}
+                        className="nav__category-item"
+                        onClick={() => setShowCategories(false)}
+                      >
+                        {genre.name}
+                      </Link>
+                    ))}
+                  </div>
+                ));
+              })()}
             </div>
           )}
         </div>
       </div>
-      {/* 오른쪽 영역: 검색창 + 프로필 */}
+
+      {/* 오른쪽 검색창 및 아바타 */}
       <div className="nav__right">
         <input
           value={searchValue}
@@ -104,4 +107,3 @@ return (
     </nav>
   );
 }
-
