@@ -121,3 +121,16 @@
 .pagination-container span {
   padding: 0 5px;
 }
+
+.search-info {
+  color: #bbb;
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+
+.no-results-text {
+  color: #999;
+  text-align: center;
+  font-size: 1.1rem;
+  padding: 40px 0;
+}

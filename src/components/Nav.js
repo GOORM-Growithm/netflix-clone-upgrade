@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import "./Nav.css";
 import axios from "../api/axios";
 import useOnClickOutside from "../hooks/useOnClickOutside";
@@ -10,9 +10,21 @@ export default function Nav() {
   const [showCategories, setShowCategories] = useState(false);
   const [genres, setGenres] = useState([]);
   const navigate = useNavigate();
+  const location = useLocation(); 
   const dropdownRef = useRef(null);
 
+  // 현재 카테고리 이름 추출
+  const currentCategoryName = (() => {
+    const pathParts = location.pathname.split("/");
+    // 경로: /category/:genreId/:genreName
+    if (pathParts[1] === "category" && pathParts[3]) {
+      // decodeURIComponent로 한글 디코딩
+      return decodeURIComponent(pathParts[3]);
+    }
+    return null;
+  })();
 
+  // 네비 색상 전환
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 50) setShow(true);
@@ -38,9 +50,23 @@ export default function Nav() {
   // 외부 클릭 시 닫기
   useOnClickOutside(dropdownRef, () => setShowCategories(false));
 
+  /* 검색 입력 처리 */
   const handleChange = (e) => {
-    setSearchValue(e.target.value);
-    navigate(`/search?q=${e.target.value}`);
+    const value = e.target.value;
+    setSearchValue(value);
+
+    // 입력값이 없을 경우엔 검색 페이지로 이동하지 않음
+    if (value.trim() === "") return;
+
+    // 현재 페이지가 카테고리인지 판단
+    const isInCategory = location.pathname.startsWith("/category/");
+    if (isInCategory) {
+      // 현재 경로: /category/:genreId/:genreName
+      const [, , genreId, genreName] = location.pathname.split("/");
+      navigate(`/category/${genreId}/${genreName}?q=${encodeURIComponent(value)}`);
+    } else {
+      navigate(`/search?q=${encodeURIComponent(value)}`);
+    }
   };
 
   return (
@@ -53,13 +79,12 @@ export default function Nav() {
           onClick={() => (window.location.href = "/")}
         />
 
-       
         <div className="nav__category-container" ref={dropdownRef}>
           <button
             className="nav__category-button"
             onClick={() => setShowCategories(!showCategories)}
           >
-            카테고리 ▾
+            {currentCategoryName ? `${currentCategoryName} ▾` : "카테고리 ▾"}
           </button>
 
           {showCategories && (
@@ -89,7 +114,6 @@ export default function Nav() {
         </div>
       </div>
 
-     
       <div className="nav__right">
         <input
           value={searchValue}
