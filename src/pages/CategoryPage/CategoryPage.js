@@ -69,8 +69,7 @@ const renderPagination = () => {
     const maxPages = Math.min(totalPages, 500); 
     const pageButtons = [];
     
-    // 간단한 페이지네이션 (예: 1... 5, 6, 7 ... 500)
-    // 여기서는 간단히 Prev / Next와 숫자 5개만 표시
+    
     let startPage = Math.max(1, currentPage - 2);
     let endPage = Math.min(maxPages, currentPage + 2);
 
