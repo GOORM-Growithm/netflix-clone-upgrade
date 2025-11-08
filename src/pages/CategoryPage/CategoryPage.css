@@ -1,0 +1,123 @@
+.category-container {
+  background-color: black;
+  width: 100%;
+  padding: 5rem 2rem 2rem; 
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.filter-container {
+  background-color: #1c1c1c; 
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 10px; 
+  border: 1px solid #333;
+}
+
+.filter-container h2 {
+  color: white;
+  font-size: 1.5rem;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.genre-list {
+  display: flex;
+  flex-wrap: wrap; 
+  gap: 10px; 
+}
+
+.genre-button {
+  background-color: #333;
+  color: white;
+  border: 1px solid #555;
+  border-radius: 20px; 
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.genre-button:hover {
+  background-color: #555;
+}
+
+.genre-button.active {
+  background-color: #e50914; 
+  border-color: #e50914;
+  font-weight: bold;
+}
+
+
+.results-container h2 {
+  color: white;
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+}
+
+.movie-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+  gap: 15px;
+}
+
+.movie {
+  flex: 1 1 auto;
+  display: inline-block;
+  width: 100%;
+}
+
+.movie__column-poster {
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.movie__poster {
+  width: 100%; 
+  border-radius: 5px;
+  transition: transform 0.3s ease;
+}
+
+.movie__poster:hover {
+  transform: scale(1.1);
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 0;
+  gap: 8px;
+  color: white;
+}
+
+.page-button {
+  background-color: #333;
+  color: white;
+  border: 1px solid #555;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.page-button:hover:not(:disabled) {
+  background-color: #555;
+}
+
+.page-button.active {
+  background-color: #e50914; 
+  border-color: #e50914;
+  font-weight: bold;
+}
+
+.page-button:disabled {
+  background-color: #222;
+  color: #777;
+  cursor: not-allowed;
+}
+
+.pagination-container span {
+  padding: 0 5px;
+}
