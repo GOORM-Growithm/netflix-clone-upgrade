@@ -34,12 +34,66 @@
 }
 
 .nav__input {
-  position: fixed;
-  left: 50%;
-  transform: translate(-50%, 0);
   background-color: rgba(0, 0, 0, 0.582);
   border-radius: 5px;
   color: white;
   padding: 5px;
   border: none;
+}
+
+.nav__category-box {
+  position: fixed;
+  left: 50%;
+  transform: translate(-50%, 0);
+  display: flex;
+  gap: 10px;
+}
+
+.nav__category-button {
+  background-color: rgba(0, 0, 0, 0.582);
+  color: white;
+  padding: 5px 10px;
+  font-size: 13px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.nav__category-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.nav__category-dropdown {
+  gap: 20px;
+
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  left: 50%;
+  transform: translateX(-50%);
+
+  background-color: rgba(0, 0, 0, 0.9);
+  border: 1px solid #444;
+  border-radius: 5px;
+  padding: 10px;
+  min-width: 200px;
+}
+
+.nav__category-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.nav__category-item {
+  color: white;
+  text-decoration: none;
+  margin: 4px 0;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.nav__category-item:hover {
+  color: #b3b3b3;
+  text-decoration: underline;
 }
