@@ -27,6 +27,7 @@ export default function Row({ isLargeRow, title, id, fetchUrl }) {
     const request = await axios.get(fetchUrl);
     console.log("request", request);
     setMovies(request.data.results);
+    console.log("request.data.results", request.data.results);
   };
 
   const handleClick = (movie) => {
@@ -64,69 +65,37 @@ export default function Row({ isLargeRow, title, id, fetchUrl }) {
       >
         <div id={id} className="row__posters">
           {movies.map((movie) => (
-            <SwiperSlide>
-              <img
-                key={movie.id}
-                style={{ padding: "25px 0" }}
-                className={`row__poster ${isLargeRow && "row__posterLarge"}`}
-                src={`https://image.tmdb.org/t/p/original/${
-                  isLargeRow ? movie.poster_path : movie.backdrop_path
+            <SwiperSlide className={isLargeRow ? "row__swiperSlideLarge" : ""}>
+              <div 
+                className={`row__poster-container ${isLargeRow && "row__posterLarge"}`}
+                onClick={() => handleClick(movie)} 
+              >
+                <img
+                  key={movie.id}
+                  style={{ padding: "20px 0" , cursor: 'pointer'}}
+                  className={`row__poster ${isLargeRow && "row__posterLarge"}`}
+                  src={`https://image.tmdb.org/t/p/original/${
+                    isLargeRow ? movie.poster_path : movie.backdrop_path
                 } `}
                 alt={movie.name}
-                onClick={() => handleClick(movie)}
-              />
+                // onClick={() => handleClick(movie)}
+                />
+
+                {/* 요약 정보 */}
+                <div className="row__poster-info">
+                  <h3 className="row__poster-title">{movie.title || movie.name || movie.original_name}</h3>
+                  <p className="row__poster-date">{movie.release_date || movie.first_air_date}</p>
+                  <p className="row__poster-overview"> 평점: {movie.vote_average}</p>
+                </div>
+                
+              </div>
             </SwiperSlide>
           ))}
         </div>
       </Swiper>
-
       {modalOpen && (
         <MovieModal {...movieSelected} setModalOpen={setModalOpen} />
       )}
     </section>
   );
 }
-
-// eslint-disable-next-line no-lone-blocks
-{/* <section className="row">
-<h2>{title}</h2>
-<div className="slider">
-  <div className="slider__arrow-left">
-    <span
-      className="arrow"
-      onClick={() => {
-        document.getElementById(id).scrollLeft -= window.innerWidth - 80;
-      }}
-    >
-      {"<"}
-    </span>
-  </div>
-  <div id={id} className="row__posters">
-    {movies.map((movie) => (
-      <img
-        key={movie.id}
-        className={`row__poster ${isLargeRow && "row__posterLarge"}`}
-        src={`https://image.tmdb.org/t/p/original/${
-          isLargeRow ? movie.poster_path : movie.backdrop_path
-        } `}
-        alt={movie.name}
-        onClick={() => handleClick(movie)}
-      />
-    ))}
-  </div>
-  <div className="slider__arrow-right">
-    <span
-      className="arrow"
-      onClick={() => {
-        document.getElementById(id).scrollLeft += window.innerWidth - 80;
-      }}
-    >
-      {">"}
-    </span>
-  </div>
-</div>
-
-{modalOpen && (
-  <MovieModal {...movieSelected} setModalOpen={setModalOpen} />
-)}
-</section> */}
