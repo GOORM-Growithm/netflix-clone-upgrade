@@ -10,7 +10,7 @@ export default function Nav() {
   const [showCategories, setShowCategories] = useState(false);
   const [genres, setGenres] = useState([]);
   const navigate = useNavigate();
-  const location = useLocation(); 
+  const location = useLocation();
   const dropdownRef = useRef(null);
 
   // 현재 카테고리 이름 추출
@@ -63,7 +63,9 @@ export default function Nav() {
     if (isInCategory) {
       // 현재 경로: /category/:genreId/:genreName
       const [, , genreId, genreName] = location.pathname.split("/");
-      navigate(`/category/${genreId}/${genreName}?q=${encodeURIComponent(value)}`);
+      navigate(
+        `/category/${genreId}/${genreName}?q=${encodeURIComponent(value)}`
+      );
     } else {
       navigate(`/search?q=${encodeURIComponent(value)}`);
     }
@@ -71,14 +73,13 @@ export default function Nav() {
 
   return (
     <nav className={`nav ${show && "nav__black"}`}>
-      <div className="nav__left">
-        <img
-          alt="Netflix logo"
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Netflix_2015_logo.svg/170px-Netflix_2015_logo.svg.png"
-          className="nav__logo"
-          onClick={() => (window.location.href = "/")}
-        />
-
+      <img
+        alt="Netflix logo"
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Netflix_2015_logo.svg/170px-Netflix_2015_logo.svg.png"
+        className="nav__logo"
+        onClick={() => (window.location.href = "/")}
+      />
+      <div className="nav__category-box">
         <div className="nav__category-container" ref={dropdownRef}>
           <button
             className="nav__category-button"
@@ -112,9 +113,7 @@ export default function Nav() {
             </div>
           )}
         </div>
-      </div>
 
-      <div className="nav__right">
         <input
           value={searchValue}
           onChange={handleChange}
@@ -122,12 +121,13 @@ export default function Nav() {
           type="text"
           placeholder="영화를 검색해주세요."
         />
-        <img
-          alt="User logged"
-          src="https://occ-0-4796-988.1.nflxso.net/dnm/api/v6/K6hjPJd6cR6FpVELC5Pd6ovHRSk/AAAABbme8JMz4rEKFJhtzpOKWFJ_6qX-0y5wwWyYvBhWS0VKFLa289dZ5zvRBggmFVWVPL2AAYE8xevD4jjLZjWumNo.png?r=a41"
-          className="nav__avatar"
-        />
       </div>
+
+      <img
+        alt="User logged"
+        src="https://occ-0-4796-988.1.nflxso.net/dnm/api/v6/K6hjPJd6cR6FpVELC5Pd6ovHRSk/AAAABbme8JMz4rEKFJhtzpOKWFJ_6qX-0y5wwWyYvBhWS0VKFLa289dZ5zvRBggmFVWVPL2AAYE8xevD4jjLZjWumNo.png?r=a41"
+        className="nav__avatar"
+      />
     </nav>
   );
 }
